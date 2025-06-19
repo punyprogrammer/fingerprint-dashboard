@@ -1,5 +1,43 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
+function getBrowserAndDevice(userAgent = navigator.userAgent) {
+  let browser = "Unknown";
+  let device = "Desktop";
+
+  // Browser detection
+  if (/chrome|crios/i.test(userAgent) && !/edge|opr|opera/i.test(userAgent)) {
+    browser = "Chrome";
+  } else if (
+    /safari/i.test(userAgent) &&
+    !/chrome|crios|android/i.test(userAgent)
+  ) {
+    browser = "Safari";
+  } else if (/firefox|fxios/i.test(userAgent)) {
+    browser = "Firefox";
+  } else if (/edg/i.test(userAgent)) {
+    browser = "Edge";
+  } else if (/opr|opera/i.test(userAgent)) {
+    browser = "Opera";
+  } else if (/msie|trident/i.test(userAgent)) {
+    browser = "Internet Explorer";
+  }
+
+  // Device detection
+  if (/android/i.test(userAgent)) {
+    device = "Android";
+  } else if (/iphone|ipad|ipod/i.test(userAgent)) {
+    device = "iOS";
+  } else if (/mobile/i.test(userAgent)) {
+    device = "Mobile";
+  } else if (/tablet/i.test(userAgent)) {
+    device = "Tablet";
+  }
+
+  return { browser, device };
+}
+
+const info = getBrowserAndDevice();
+console.log(info); // { browser: "Chrome", device: "Desktop" }
 
 const ITEMS_PER_PAGE = 20;
 
@@ -44,6 +82,8 @@ function App() {
               <th className="px-4 py-3">Hash</th>
               <th className="px-4 py-3">Last Visited</th>
               <th className="px-4 py-3">Browser</th>
+              <th className="px-4 py-3">Device</th>
+              <th className="px-4 py-3">Location</th>
               <th className="px-4 py-3">Time Zone</th>
             </tr>
           </thead>
@@ -55,7 +95,13 @@ function App() {
                   {new Date(fp.last_visited || fp.timestamp).toLocaleString()}
                 </td>
                 <td className="px-4 py-2 text-center">
-                  {fp.browser?.userAgent}
+                  {getBrowserAndDevice(fp.browser?.userAgent)?.browser}
+                </td>
+                <td className="px-4 py-2 text-center">
+                  {getBrowserAndDevice(fp.browser?.userAgent)?.device}
+                </td>
+                <td className="px-4 py-2 text-center">
+                  {`${fp?.city},${fp?.country}`}
                 </td>
                 <td className="px-4 py-2">{fp.timezone?.timezone}</td>
               </tr>
